@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 성적 맞춤 비교과 나침반 🧭</title>
+    <!-- Pretendard Web Font for clean, Toss-style modern Korean typography -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --primary-light: #EFF6FF;
+            --primary-glow: rgba(37, 99, 235, 0.15);
+            --accent-sky: #38BDF8;
+            --accent-green: #10B981;
+            --accent-green-light: #ECFDF5;
+            --accent-green-border: #A7F3D0;
+            --accent-orange: #F59E0B;
+            --accent-orange-light: #FFFBEB;
+            --accent-orange-border: #FDE68A;
+            --bg-main: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --text-light: #94A3B8;
+            --border-color: #E2E8F0;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.03);
+            --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.08);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        /* Base Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        /* App Layout Container */
+        .app-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 16px 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent-sky));
+            color: white;
+            border-radius: 12px;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            animation: rotateCompass 10s linear infinite;
+        }
+
+        @keyframes rotateCompass {
+            0%, 80% { transform: rotate(0deg); }
+            85% { transform: rotate(15deg); }
+            90% { transform: rotate(-10deg); }
+            95% { transform: rotate(5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .logo-title h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-title p {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-reset {
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .btn-reset:hover {
+            background-color: #E2E8F0;
+            color: var(--text-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-reset:active {
+            transform: translateY(1px);
+        }
+
+        /* Two Column Main Content */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Cards Layout */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .card-title-icon {
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+        }
+
+        /* Grade Selection UI */
+        .subject-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .subject-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .subject-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-name {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .subject-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-korean { background-color: #FEE2E2; color: #EF4444; }
+        .badge-math { background-color: #E0E7FF; color: #4F46E5; }
+        .badge-english { background-color: #D1FAE5; color: #10B981; }
+        .badge-inquiry { background-color: #FEF3C7; color: #D97706; }
+
+        .selected-grade-val {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Grade Segment Buttons */
+        .grade-button-group {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 4px;
+            background-color: #F1F5F9;
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .grade-btn {
+            background: none;
+            border: none;
+            padding: 8px 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .grade-btn:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+            color: var(--text-dark);
+        }
+
+        .grade-btn.active {
+            background-color: var(--bg-card);
+            color: var(--text-dark);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            font-weight: 800;
+        }
+
+        /* Specific active styles for subjects when selected */
+        .subject-row[data-subject="korean"] .grade-btn.active { color: #EF4444; }
+        .subject-row[data-subject="math"] .grade-btn.active { color: #4F46E5; }
+        .subject-row[data-subject="english"] .grade-btn.active { color: #10B981; }
+        .subject-row[data-subject="inquiry"] .grade-btn.active { color: #D97706; }
+
+        /* Career Domain Selector */
+        .career-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .career-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-card);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            position: relative;
+        }
+
+        .career-option:hover {
+            border-color: #CBD5E1;
+            transform: translateX(4px);
+        }
+
+        .career-option.active {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .career-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .career-icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background-color: #F1F5F9;
+            font-size: 20px;
+            transition: var(--transition);
+        }
+
+        .career-option.active .career-icon-box {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .career-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .career-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .career-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: var(--transition);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* Results / Dashboard Panel Styles */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Empty State */
+        .empty-dashboard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 40px;
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-color);
+            min-height: 480px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .empty-compass {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: pulseSlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .empty-dashboard h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-dashboard p {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 320px;
+            line-height: 1.5;
+        }
+
+        /* Analysis Header Card (Chart & Mentoring Message) */
+        .analysis-card {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 28px;
+            align-items: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .radar-svg {
+            overflow: visible;
+        }
+
+        .radar-label {
+            font-size: 11px;
+            font-weight: 800;
+            fill: var(--text-dark);
+        }
+
+        .analysis-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .avg-badge {
+            align-self: flex-start;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .avg-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .encouragement-msg {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Tier Containers */
+        .tier-section {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tier-header-main {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tier-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* High Fidelity Tier Highlight Styles */
+        .tier-card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            padding: 22px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tier-card.active-recommendation {
+            border: 2px solid var(--primary);
+            background: linear-gradient(180deg, var(--bg-card) 0%, rgba(37, 99, 235, 0.01) 100%);
+            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.08);
+        }
+
+        .tier-card.active-recommendation::before {
+            content: "나의 맞춤 추천 단계";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--primary);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-bottom-left-radius: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        .tier-card.inactive-recommendation {
+            opacity: 0.65;
+        }
+
+        .tier-card.inactive-recommendation:hover {
+            opacity: 0.95;
+        }
+
+        .tier-badge-label {
+            align-self: flex-start;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .badge-supplement {
+            background-color: var(--accent-orange-light);
+            color: var(--accent-orange);
+            border: 1px solid var(--accent-orange-border);
+        }
+
+        .badge-growth {
+            background-color: var(--accent-green-light);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green-border);
+        }
+
+        .badge-advanced {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .tier-info-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tier-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .tier-card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Programs Grid Inside Tiers */
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .program-item {
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .program-item:hover {
+            border-color: #CBD5E1;
+            background-color: #F1F5F9;
+            transform: translateY(-2px);
+        }
+
+        .program-header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .program-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: rgba(37, 99, 235, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            align-self: flex-start;
+        }
+
+        .program-item-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .program-item-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .program-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .btn-action-view {
+            flex: 1;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 8px 0;
+            font-size: 11.5px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-action-view:hover {
+            background-color: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        .btn-action-add {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-action-add:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-action-add.added {
+            background-color: var(--accent-green);
+            color: white;
+        }
+
+        /* My Goal Tracker (내 활동함) */
+        .tracker-section {
+            margin-top: 0px;
+        }
+
+        .tracker-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .tracker-count {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .tracker-progress-wrapper {
+            background-color: #E2E8F0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .tracker-progress-bar {
+            background: linear-gradient(90deg, var(--primary), var(--accent-sky));
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        }
+
+        .tracker-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tracker-empty {
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: var(--text-light);
+            background-color: #F8FAFC;
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border-color);
+        }
+
+        .tracker-item {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: var(--transition);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tracker-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .tracker-item-title-box {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-width: 80%;
+        }
+
+        .tracker-item-tier {
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .tracker-item-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .btn-tracker-delete {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .btn-tracker-delete:hover {
+            color: #EF4444;
+            background-color: #FEE2E2;
+        }
+
+        /* Checkbox lists in Goal Tracker */
+        .action-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid #E2E8F0;
+            padding-top: 12px;
+        }
+
+        .check-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12.5px;
+            color: var(--text-dark);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .check-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 2px solid var(--border-color);
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+            margin-top: 2px;
+            position: relative;
+        }
+
+        .check-label input[type="checkbox"]:checked {
+            background-color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        .check-label input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .check-label span {
+            line-height: 1.4;
+            transition: var(--transition);
+        }
+
+        .check-label input[type="checkbox"]:checked + span {
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .tracker-item-progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tracker-item-bar-bg {
+            background-color: #E2E8F0;
+            height: 5px;
+            border-radius: 3px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .tracker-item-bar {
+            background-color: var(--accent-green);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .tracker-item-pct {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-green);
+            min-width: 28px;
+            text-align: right;
+        }
+
+        /* Detail Action Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 580px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 24px 28px 16px 28px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .modal-title-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-badges {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .btn-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-modal-close:hover {
+            background-color: #F1F5F9;
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: 28px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .modal-section-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .modal-desc {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .modal-step-item {
+            display: flex;
+            gap: 14px;
+            background-color: #F8FAFC;
+            border: 1px solid #F1F5F9;
+            padding: 16px;
+            border-radius: var(--radius-md);
+        }
+
+        .modal-step-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .modal-step-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .modal-step-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .modal-step-desc {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* School record info block */
+        .school-tip-box {
+            background-color: #FFFBEB;
+            border: 1px solid #FDE68A;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .school-tip-icon {
+            font-size: 18px;
+            color: #D97706;
+            flex-shrink: 0;
+        }
+
+        .school-tip-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .school-tip-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #B45309;
+        }
+
+        .school-tip-desc {
+            font-size: 11.5px;
+            color: #D97706;
+            line-height: 1.5;
+        }
+
+        .modal-footer {
+            padding: 20px 28px;
+            border-top: 1px solid var(--border-color);
+            background-color: #F8FAFC;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-modal-add {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 13.5px;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-modal-add:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-modal-add.added {
+            background-color: var(--accent-green);
+        }
+
+        /* Responsive Layout styling */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .app-container {
+                padding: 16px;
+            }
+            header {
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+            .analysis-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .analysis-info {
+                align-items: center;
+            }
+            .avg-badge {
+                align-self: center;
+            }
+            .grade-button-group {
+                gap: 2px;
+            }
+            .grade-btn {
+                padding: 6px 0;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo-area">
+                <div class="logo-icon">🧭</div>
+                <div class="logo-title">
+                    <h1>내 성적 맞춤 비교과 나침반</h1>
+                    <p>My Grade-Customized Extracurricular Compass</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="btn-reset" onclick="resetAllData()">
+                    <span>🔄</span> 전체 초기화
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-grid">
+            <!-- Left Panel (Input Form & Goal Tracker) -->
+            <div class="input-panel">
+                <!-- Grade Input Card -->
+                <div class="card">
+                    <div class="card-title-container">
+                        <span class="card-title-icon">📊</span>
+                        <h2 class="card-title">1. 교과 성적 입력</h2>
+                    </div>
+                    <div class="subject-grid">
+                        <!-- Korean -->
+                        <div class="subject-row" data-subject="korean">
+                            <div class="subject-info">
+                                <span class="subject-name">
+                                    <span class="subject-badge badge-korean">국어</span>
+                                </span>
+                                <span class="selected-grade-val" id="korean-val">선택 안 됨</span>
+                            </div>
+                            <div class="grade-button-group">
+                                <button type="button" class="grade-btn" data-grade="1" onclick="selectGrade('korean', 1)">1</button>
+                                <button type="button" class="grade-btn" data-grade="2" onclick="selectGrade('korean', 2)">2</button>
+                                <button type="button" class="grade-btn" data-grade="3" onclick="selectGrade('korean', 3)">3</button>
+                                <button type="button" class="grade-btn" data-grade="4" onclick="selectGrade('korean', 4)">4</button>
+                                <button type="button" class="grade-btn" data-grade="5" onclick="selectGrade('korean', 5)">5</button>
+                                <button type="button" class="grade-btn" data-grade="6" onclick="selectGrade('korean', 6)">6</button>
+                                <button type="button" class="grade-btn" data-grade="7" onclick="selectGrade('korean', 7)">7</button>
+                                <button type="button" class="grade-btn" data-grade="8" onclick="selectGrade('korean', 8)">8</button>
+                                <button type="button" class="grade-btn" data-grade="9" onclick="selectGrade('korean', 9)">9</button>
+                            </div>
+                        </div>
+
+                        <!-- Math -->
+                        <div class="subject-row" data-subject="math">
+                            <div class="subject-info">
+                                <span class="subject-name">
+                                    <span class="subject-badge badge-math">수학</span>
+                                </span>
+                                <span class="selected-grade-val" id="math-val">선택 안 됨</span>
+                            </div>
+                            <div class="grade-button-group">
+                                <button type="button" class="grade-btn" data-grade="1" onclick="selectGrade('math', 1)">1</button>
+                                <button type="button" class="grade-btn" data-grade="2" onclick="selectGrade('math', 2)">2</button>
+                                <button type="button" class="grade-btn" data-grade="3" onclick="selectGrade('math', 3)">3</button>
+                                <button type="button" class="grade-btn" data-grade="4" onclick="selectGrade('math', 4)">4</button>
+                                <button type="button" class="grade-btn" data-grade="5" onclick="selectGrade('math', 5)">5</button>
+                                <button type="button" class="grade-btn" data-grade="6" onclick="selectGrade('math', 6)">6</button>
+                                <button type="button" class="grade-btn" data-grade="7" onclick="selectGrade('math', 7)">7</button>
+                                <button type="button" class="grade-btn" data-grade="8" onclick="selectGrade('math', 8)">8</button>
+                                <button type="button" class="grade-btn" data-grade="9" onclick="selectGrade('math', 9)">9</button>
+                            </div>
+                        </div>
+
+                        <!-- English -->
+                        <div class="subject-row" data-subject="english">
+                            <div class="subject-info">
+                                <span class="subject-name">
+                                    <span class="subject-badge badge-english">영어</span>
+                                </span>
+                                <span class="selected-grade-val" id="english-val">선택 안 됨</span>
+                            </div>
+                            <div class="grade-button-group">
+                                <button type="button" class="grade-btn" data-grade="1" onclick="selectGrade('english', 1)">1</button>
+                                <button type="button" class="grade-btn" data-grade="2" onclick="selectGrade('english', 2)">2</button>
+                                <button type="button" class="grade-btn" data-grade="3" onclick="selectGrade('english', 3)">3</button>
+                                <button type="button" class="grade-btn" data-grade="4" onclick="selectGrade('english', 4)">4</button>
+                                <button type="button" class="grade-btn" data-grade="5" onclick="selectGrade('english', 5)">5</button>
+                                <button type="button" class="grade-btn" data-grade="6" onclick="selectGrade('english', 6)">6</button>
+                                <button type="button" class="grade-btn" data-grade="7" onclick="selectGrade('english', 7)">7</button>
+                                <button type="button" class="grade-btn" data-grade="8" onclick="selectGrade('english', 8)">8</button>
+                                <button type="button" class="grade-btn" data-grade="9" onclick="selectGrade('english', 9)">9</button>
+                            </div>
+                        </div>
+
+                        <!-- Inquiry -->
+                        <div class="subject-row" data-subject="inquiry">
+                            <div class="subject-info">
+                                <span class="subject-name">
+                                    <span class="subject-badge badge-inquiry">탐구</span>
+                                </span>
+                                <span class="selected-grade-val" id="inquiry-val">선택 안 됨</span>
+                            </div>
+                            <div class="grade-button-group">
+                                <button type="button" class="grade-btn" data-grade="1" onclick="selectGrade('inquiry', 1)">1</button>
+                                <button type="button" class="grade-btn" data-grade="2" onclick="selectGrade('inquiry', 2)">2</button>
+                                <button type="button" class="grade-btn" data-grade="3" onclick="selectGrade('inquiry', 3)">3</button>
+                                <button type="button" class="grade-btn" data-grade="4" onclick="selectGrade('inquiry', 4)">4</button>
+                                <button type="button" class="grade-btn" data-grade="5" onclick="selectGrade('inquiry', 5)">5</button>
+                                <button type="button" class="grade-btn" data-grade="6" onclick="selectGrade('inquiry', 6)">6</button>
+                                <button type="button" class="grade-btn" data-grade="7" onclick="selectGrade('inquiry', 7)">7</button>
+                                <button type="button" class="grade-btn" data-grade="8" onclick="selectGrade('inquiry', 8)">8</button>
+                                <button type="button" class="grade-btn" data-grade="9" onclick="selectGrade('inquiry', 9)">9</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Career Domain Card -->
+                <div class="card">
+                    <div class="card-title-container">
+                        <span class="card-title-icon">🎯</span>
+                        <h2 class="card-title">2. 희망 진로 계열</h2>
+                    </div>
+                    <div class="career-grid">
+                        <label class="career-option" id="career-humanities">
+                            <input type="radio" name="career-domain" value="humanities" onchange="selectCareer('humanities')">
+                            <div class="career-icon-box">✍️</div>
+                            <div class="career-text">
+                                <span class="career-name">인문 계열</span>
+                                <span class="career-desc">문학, 철학, 역사, 언어 및 외국어 연구</span>
+                            </div>
+                        </label>
+                        <label class="career-option" id="career-social">
+                            <input type="radio" name="career-domain" value="social" onchange="selectCareer('social')">
+                            <div class="career-icon-box">⚖️</div>
+                            <div class="career-text">
+                                <span class="career-name">사회과학 계열</span>
+                                <span class="career-desc">법학, 정치, 행정, 경제, 경영, 지리, 교육</span>
+                            </div>
+                        </label>
+                        <label class="career-option" id="career-natural">
+                            <input type="radio" name="career-domain" value="natural" onchange="selectCareer('natural')">
+                            <div class="career-icon-box">🧪</div>
+                            <div class="career-text">
+                                <span class="career-name">자연과학 계열</span>
+                                <span class="career-desc">수학, 물리학, 화학, 생명과학, 천문기상</span>
+                            </div>
+                        </label>
+                        <label class="career-option" id="career-engineering">
+                            <input type="radio" name="career-domain" value="engineering" onchange="selectCareer('engineering')">
+                            <div class="career-icon-box">💻</div>
+                            <div class="career-text">
+                                <span class="career-name">공학 계열</span>
+                                <span class="career-desc">컴퓨터, 로봇, 기계, 신소재, 건축, AI 소프트웨어</span>
+                            </div>
+                        </label>
+                        <label class="career-option" id="career-arts">
+                            <input type="radio" name="career-domain" value="arts" onchange="selectCareer('arts')">
+                            <div class="career-icon-box">🎨</div>
+                            <div class="career-text">
+                                <span class="career-name">예체능 계열</span>
+                                <span class="career-desc">미술, 음악, 디자인, 실용 예술, 스포츠 과학</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button type="button" class="btn-submit" onclick="generateAnalysis()">맞춤 비교과 추천받기</button>
+                </div>
+
+                <!-- My Goal Tracker (내 활동함) -->
+                <div class="card tracker-section">
+                    <div class="card-title-container">
+                        <span class="card-title-icon">🚩</span>
+                        <h2 class="card-title">내 활동함 (목표 트래커)</h2>
+                    </div>
+                    <div class="tracker-stats">
+                        <span class="tracker-count" id="tracker-count-text">담은 활동 0개</span>
+                        <span class="tracker-count" id="tracker-pct-text">달성률 0%</span>
+                    </div>
+                    <div class="tracker-progress-wrapper">
+                        <div class="tracker-progress-bar" id="tracker-main-progress"></div>
+                    </div>
+                    <div class="tracker-list" id="tracker-list-box">
+                        <!-- Dynamic content -->
+                        <div class="tracker-empty">아직 담은 비교과 활동이 없습니다. 추천 결과에서 마음에 드는 활동을 담아보세요!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel (Analysis & Recommendations Dashboard) -->
+            <div class="dashboard-panel" id="dashboard-panel">
+                <!-- Place holder when loaded first -->
+                <div class="empty-dashboard" id="empty-state">
+                    <div class="empty-compass">🧭</div>
+                    <h3>나만의 비교과 나침반 작동 준비 완료</h3>
+                    <p>왼쪽에서 국어, 수학, 영어, 탐구 성적과 희망 진로 계열을 입력한 후, '맞춤 비교과 추천받기' 버튼을 클릭해 주세요!</p>
+                </div>
+
+                <!-- Analysis Dashboard Content (Hidden by default) -->
+                <div class="dashboard-container" id="dashboard-content" style="display: none;">
+                    <!-- Result Summary Card -->
+                    <div class="card analysis-card">
+                        <div class="chart-container">
+                            <svg width="200" height="200" viewBox="0 0 200 200" class="radar-svg" id="radar-chart">
+                                <!-- Background lines & circles will be injected via JS -->
+                            </svg>
+                        </div>
+                        <div class="analysis-info">
+                            <span class="avg-badge" id="avg-badge-val">평균 1.0 등급</span>
+                            <h3 class="avg-text" id="analysis-header-msg">학업 능력이 매우 우수합니다!</h3>
+                            <p class="encouragement-msg" id="encouragement-msg-text">
+                                현재의 우수한 교과 성적을 유지하며, 교과 지식을 응용한 고난이도 탐구 활동을 통해 본인의 특별한 잠재력을 생활기록부에 증명할 차례입니다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Recommendation Header -->
+                    <h3 class="tier-header-main">🎯 성적대별 3단계 추천 프로그램</h3>
+
+                    <!-- Tier 1: Supplement Stage (4-9 등급) -->
+                    <div class="tier-card" id="tier-supplement">
+                        <span class="tier-badge-label badge-supplement">1단계: 보완 및 보충 단계 (4~9등급 추천)</span>
+                        <div class="tier-info-wrap">
+                            <h4 class="tier-card-title">기초 학력 다지기 및 개념 연계 활동</h4>
+                            <p class="tier-card-desc">기초 학업 능력을 탄탄하게 보완하고, 또래 멘토링 활동이나 오답 노트 연구 등 자율적인 학습 태도 성장을 보여주기에 가장 적합합니다.</p>
+                        </div>
+                        <div class="programs-grid" id="programs-supplement-box">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <!-- Tier 2: Growth Stage (2-3 등급) -->
+                    <div class="tier-card" id="tier-growth">
+                        <span class="tier-badge-label badge-growth">2단계: 도약 및 발전 단계 (2~3등급 추천)</span>
+                        <div class="tier-info-wrap">
+                            <h4 class="tier-card-title">교과 심화 탐구 및 주도적 동아리 연계</h4>
+                            <p class="tier-card-desc">교과서에 나온 내용을 한 단계 더 깊게 파고드는 개인 탐구 보고서 작성이나, 교내 학술 모임 참여 등을 통해 발전 가능성을 적극 증명하세요.</p>
+                        </div>
+                        <div class="programs-grid" id="programs-growth-box">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <!-- Tier 3: Advanced Stage (1 등급) -->
+                    <div class="tier-card" id="tier-advanced">
+                        <span class="tier-badge-label badge-advanced">3단계: 심화 및 유지 단계 (1등급 추천)</span>
+                        <div class="tier-info-wrap">
+                            <h4 class="tier-card-title">융합 학술 보고서 및 자율 연구 프로젝트 리더</h4>
+                            <p class="tier-card-desc">대학 학술 논문 분석이나 학제적 융합 탐구 활동, 소모임 리더 활동 등을 수행하여 창의성과 최고 수준의 학업 역량을 돋보이게 합니다.</p>
+                        </div>
+                        <div class="programs-grid" id="programs-advanced-box">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Action Plan Detail Modal -->
+    <div class="modal-overlay" id="detail-modal" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title-box">
+                    <div class="modal-badges">
+                        <span class="tier-badge-label" id="modal-tier-badge">도약/발전 단계</span>
+                        <span class="program-tag" id="modal-subject-tag">수학 연계</span>
+                    </div>
+                    <h3 class="modal-title" id="modal-title-text">수학적 모델링을 통한 전염병 확산 시뮬레이션</h3>
+                </div>
+                <button type="button" class="btn-modal-close" onclick="closeModalDirect()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section-title">📝 활동 개요</div>
+                <p class="modal-desc" id="modal-desc-text">
+                    수학의 수열이나 미적분 기초 개념을 활용해 전염병의 확산 경로와 예방 정책 효과를 정량적으로 분석합니다.
+                </p>
+
+                <div class="modal-section-title">📅 이번 달 3단계 실행 로드맵 (Action Plan)</div>
+                <div class="modal-steps-container">
+                    <div class="modal-step-item">
+                        <div class="modal-step-num">1</div>
+                        <div class="modal-step-text">
+                            <span class="modal-step-title">1단계: 계획 수립 및 기초 리서치</span>
+                            <span class="modal-step-desc" id="modal-step-1-desc">활동 목표를 정의하고 주제 탐구를 위한 관련 도서 선정 및 핵심 키워드를 설정합니다.</span>
+                        </div>
+                    </div>
+                    <div class="modal-step-item">
+                        <div class="modal-step-num">2</div>
+                        <div class="modal-step-text">
+                            <span class="modal-step-title">2단계: 심층 탐구 및 실행 일지 작성</span>
+                            <span class="modal-step-desc" id="modal-step-2-desc">수학 모델 설계, 현장 실측 혹은 논문 데이터 비교 분석 등을 수행하고 매주 진행 상황을 일지로 정리합니다.</span>
+                        </div>
+                    </div>
+                    <div class="modal-step-item">
+                        <div class="modal-step-num">3</div>
+                        <div class="modal-step-text">
+                            <span class="modal-step-title">3단계: 탐구 결과물 도출 및 생활기록부 연계</span>
+                            <span class="modal-step-desc" id="modal-step-3-desc">최종 교과 심화 보고서(A4 2~3장)를 완성하여 담당 교과 선생님께 제출하고, 학교생활기록부 교과세특 기재를 연계합니다.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- School Record Integration Tip -->
+                <div class="school-tip-box">
+                    <span class="school-tip-icon">💡</span>
+                    <div class="school-tip-content">
+                        <span class="school-tip-title">학교생활기록부(생기부) 연계 작성 팁</span>
+                        <span class="school-tip-desc">활동 보고서 완성에 그치지 말고, 담당 과목의 '과목별 세부능력 및 특기사항(세특)'이나 '동아리활동 상황'에 본인이 기여한 역할과 배운 점 중심으로 기록을 건의해 보세요.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-add" id="modal-action-btn" onclick="toggleAddFromModal()">내 활동함에 담기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Database of recommended extracurricular activities
+        const PROGRAM_DATABASE = {
+            humanities: {
+                supplement: [
+                    {
+                        id: "hum_sup_1",
+                        title: "교과 어휘 100일 챌린지 & 독서 멘티",
+                        subject: "국어/영어 연계",
+                        desc: "교과서에 자주 등장하는 한자어와 필수 영단어를 정리하고, 또래 멘토와 교과 내용을 함께 복습합니다.",
+                        steps: [
+                            "교과 단어장 정리 및 매일 5개씩 어휘 학습일지 쓰기",
+                            "또래 멘토와 주 1회 교과 핵심 개념 설명하기 멘토링 진행",
+                            "어휘 챌린지 완료 보고서와 멘토링 일지 교과 선생님께 제출"
+                        ]
+                    },
+                    {
+                        id: "hum_sup_2",
+                        title: "나만의 인문학 독서 마라톤",
+                        subject: "진로/인문 연계",
+                        desc: "쉬운 난이도의 인문학 베스트셀러를 선정하여 매일 정해진 분량을 읽고 생각을 짧게 기록합니다.",
+                        steps: [
+                            "인문학 도서 1권 선정 및 주간 독서 분량 계획 수립",
+                            "핵심 문장 필사 및 느낀 점을 3문장 이내로 정리하는 독서록 작성",
+                            "독서 결과를 바탕으로 '나의 삶과 책' 주제의 자유 감상문 제출"
+                        ]
+                    }
+                ],
+                growth: [
+                    {
+                        id: "hum_gro_1",
+                        title: "고전 문학 현대적 재해석 보고서",
+                        subject: "국어/사회 연계",
+                        desc: "고전 소설 속 인물의 갈등을 현대 사회 문제(인권, 환경, 경제 등)와 연결하여 분석하는 보고서를 작성합니다.",
+                        steps: [
+                            "교과서 수록 고전 소설 1편 분석 및 현대적 갈등 상황 매칭",
+                            "현대 사회 현상 관련 신문 기사 조사 및 대조 분석 수행",
+                            "작품의 주제 의식을 재조명하는 '고전의 현대적 의의' 보고서 완성"
+                        ]
+                    },
+                    {
+                        id: "hum_gro_2",
+                        title: "교과 심화 인문학 토론 및 스피치",
+                        subject: "국어/진로 연계",
+                        desc: "인문학적 논쟁거리(예: 역사적 사건의 재평가, 인공지능의 자아 인정 등)를 주제로 토론하고 발표합니다.",
+                        steps: [
+                            "토론 주제 선정 및 찬반 논거 중심의 개요서 작성",
+                            "동아리 내 모의 토론 진행 및 피드백 기록 정리",
+                            "토론 요약문 및 최종 주장 발표용 스피치 대본 완성 및 업로드"
+                        ]
+                    }
+                ],
+                advanced: [
+                    {
+                        id: "hum_adv_1",
+                        title: "동서양 고전 철학 사상 비교 소논문",
+                        subject: "윤리/사상 연계",
+                        desc: "유교의 민본 사상과 서양의 사회계약설을 오늘날의 민주주의 관점에서 비교 연구한 소논문을 작성합니다.",
+                        steps: [
+                            "연구 가설 설정 및 동서양 철학 고전 문헌 조사",
+                            "두 사상의 공통점/차이점을 비교하는 본문 집필 및 지도교사 피드백",
+                            "참고문헌을 갖춘 학술 보고서 완성 후 교내 학술제 발표"
+                        ]
+                    },
+                    {
+                        id: "hum_adv_2",
+                        title: "언어 네트워크 분석을 통한 미디어 연구",
+                        subject: "국어/매체 연계",
+                        desc: "특정 언론사들의 뉴스 헤드라인을 언어 네트워크 분석 기법을 통해 비교하여 보도 태도의 차이를 증명합니다.",
+                        steps: [
+                            "주제 키워드 선정 및 언론사별 관련 기사 헤드라인 50개 이상 수집",
+                            "자주 사용된 명사 빈도 분석 및 핵심 단어 관계망 맵핑",
+                            "미디어 편향성 및 담론 분석 결과 보고서를 교과 세특 자료로 제출"
+                        ]
+                    }
+                ]
+            },
+            social: {
+                supplement: [
+                    {
+                        id: "soc_sup_1",
+                        title: "시사 뉴스 스크랩 & 개념 노트",
+                        subject: "사회/사회탐구 연계",
+                        desc: "매주 시사 이슈 기사를 1개 선정하여 스크랩하고, 교과서에 나오는 사회학적 핵심 개념어와 매칭하여 정리합니다.",
+                        steps: [
+                            "신문 경제/사회 면에서 관심 이슈 기사 선정 및 스크랩",
+                            "기사 속 인물/사건을 설명하는 교과 개념어(예: 기회비용) 풀이",
+                            "스크랩 북을 교과 시간 또는 학급 자율 탐구 시간에 제출"
+                        ]
+                    },
+                    {
+                        id: "soc_sup_2",
+                        title: "우리 동네 생활 문제 관찰 일지",
+                        subject: "사회/지리 연계",
+                        desc: "우리 동네(학교 주변)에서 개선이 필요한 환경, 교통, 안전 문제를 직접 찾아 기록하고 탐색합니다.",
+                        steps: [
+                            "통학로 안전 취약 지역 또는 쓰레기 무단 투기 지역 현장 답사",
+                            "주민 불편 사항 인터뷰 및 관련 조례/규정 간단 요약",
+                            "지도에 문제 위치를 표시한 '안전 지도' 제작 및 개선안 일지 작성"
+                        ]
+                    }
+                ],
+                growth: [
+                    {
+                        id: "soc_gro_1",
+                        title: "지역 공동체 문제 해결 공공 정책 제안서",
+                        subject: "사회/정치와법 연계",
+                        desc: "지역 사회의 구체적인 문제(청소년 시설 부족, 환경 파괴 등)에 대해 구체적인 정책 해결책을 구상합니다.",
+                        steps: [
+                            "지자체 민원 게시판 분석을 통해 핵심 커뮤니티 이슈 도출",
+                            "타 지역 또는 해외의 유사 문제 해결 우수 사례 리서치",
+                            "실현 가능한 정책 제안 양식서를 작성하여 지자체 국민신문고에 제출"
+                        ]
+                    },
+                    {
+                        id: "soc_gro_2",
+                        title: "교내 모의 재판 및 학생 권리 분석",
+                        subject: "정치와법/사회 연계",
+                        desc: "실제 판례나 가상의 시나리오를 바탕으로 모의 법정을 설계하여 검사, 변호인, 판사 역할을 맡아 토론을 벌입니다.",
+                        steps: [
+                            "학교 폭력 또는 저작권 침해 관련 모의 재판 대본 집필",
+                            "동아리 부원들과 재판 시연 및 모의 배심원 판정 유치",
+                            "재판 평결문 작성 및 헌법상 기본권 보장 관련 세특 보고서 정리"
+                        ]
+                    }
+                ],
+                advanced: [
+                    {
+                        id: "soc_adv_1",
+                        title: "지방 소멸 대안으로서의 로컬 비즈니스 연구",
+                        subject: "경제/사회문화 연계",
+                        desc: "인구 감소 지역의 생존 방안으로 떠오르는 로컬 크리에이터 비즈니스 모델을 분석하고 한계점 및 발전안을 연구합니다.",
+                        steps: [
+                            "통계청 인구 동향 자료 분석 및 특정 지방 소멸 위험도 산출",
+                            "성공적인 로컬 브랜드 비즈니스 모델 2곳 분석 및 인터뷰 자료 조사",
+                            "지속 가능한 로컬 비즈니스 생태계 구축을 위한 정책 제언 논문 작성"
+                        ]
+                    },
+                    {
+                        id: "soc_adv_2",
+                        title: "플랫폼 노동자의 법적 지위 및 노동법 개선 연구",
+                        subject: "정치와법/경제 연계",
+                        desc: "배달 라이더, 웹툰 작가 등 플랫폼 노동의 확산에 따른 기존 노동법의 한계를 지적하고 개선 대안을 도출합니다.",
+                        steps: [
+                            "플랫폼 근로자의 정의 및 근로기준법상 근로자성 관련 판례 분석",
+                            "국내외 플랫폼 노동 특별법 입법 동향 비교 분석",
+                            "특수고용직 보호를 위한 입법 청원 제안서 형태의 연구 보고서 완성"
+                        ]
+                    }
+                ]
+            },
+            natural: {
+                supplement: [
+                    {
+                        id: "nat_sup_1",
+                        title: "수학 실생활 연계 오답 챌린지",
+                        subject: "수학 연계",
+                        desc: "단순 계산 실수를 넘어 실생활 문제(금융 이자율, 기상 예보 등)에 수학 개념이 사용되는 방식을 학습하고 오답을 보완합니다.",
+                        steps: [
+                            "중간/기말고사 수학 오답 원인을 유형별로 분류 및 분석",
+                            "오답과 관련된 교과 개념이 실생활에 쓰이는 사례(예: 삼각비와 건축) 조사",
+                            "분류 일지와 실생활 응용 개념을 요약한 '수학 성장 일기' 작성"
+                        ]
+                    },
+                    {
+                        id: "nat_sup_2",
+                        title: "일상 과학 원리 탐구 멘티 일지",
+                        subject: "과학탐구 연계",
+                        desc: "주변 사물이나 자연 현상(비누의 세척 원리, 스마트폰 배터리 등)에 숨겨진 과학적 지식을 탐색합니다.",
+                        steps: [
+                            "실생활 물리/화학 현상 중 의문점 3가지 리스트업",
+                            "교과서 및 쉬운 과학 전문 잡지를 활용해 작동 원리 정리",
+                            "원리를 도식으로 나타낸 한 페이지 보고서 작성 및 동아리 발표"
+                        ]
+                    }
+                ],
+                growth: [
+                    {
+                        id: "nat_gro_1",
+                        title: "수학적 모델링을 통한 전염병 확산 시뮬레이션",
+                        subject: "수학/생명과학 연계",
+                        desc: "수학의 수열이나 미적분 기초 개념을 활용해 전염병의 확산 경로와 예방 정책 효과를 정량적으로 분석합니다.",
+                        steps: [
+                            "기초 SIR 모델(감염대상자, 감염자, 회복자)의 수학적 구조 이해",
+                            "격리율 및 백신 접종률에 따른 확산 속도 비교 시뮬레이션 데이터 작성",
+                            "수학적 모델의 예측 한계와 실생활 방역 대책 연계 보고서 작성"
+                        ]
+                    },
+                    {
+                        id: "nat_gro_2",
+                        title: "친환경 생분해성 플라스틱 제작 및 분해 실험",
+                        subject: "화학/생명과학 연계",
+                        desc: "녹말, 젤라틴 등 천연 재료를 이용해 생분해성 플라스틱을 직접 제조하고, 토양 산도에 따른 분해 속도를 측정합니다.",
+                        steps: [
+                            "친환경 플라스틱 제조 실험 프로토콜 설계 및 준비물 확보",
+                            "다양한 pH 조건의 토양에서 기간별 생분해 정도 측정 및 기록",
+                            "기존 합성수지 플라스틱과의 비교 분석 및 대체 가능성 보고서 작성"
+                        ]
+                    }
+                ],
+                advanced: [
+                    {
+                        id: "nat_adv_1",
+                        title: "카오스 이론과 나비효과의 수학적 증명",
+                        subject: "수학/물리 연계",
+                        desc: "비선형 역학계의 특징을 나타내는 로렌츠 방정식을 조사하고, 초기 조건의 미세한 차이가 미치는 기상 변화 영향을 증명합니다.",
+                        steps: [
+                            "로렌츠 어트랙터 방정식의 수학적 구조 및 미분방정식 개념 학습",
+                            "수치 해석 기법을 이용하여 초기값 변화에 따른 궤적 발산 그래프 구현",
+                            "카오스 이론의 현대 기상 예측 적용 한계 및 의미 소논문 작성"
+                        ]
+                    },
+                    {
+                        id: "nat_adv_2",
+                        title: "크리스퍼 유전자 가위의 윤리 및 메커니즘 분석",
+                        subject: "생명과학/화학 연계",
+                        desc: "3세대 유전자 가위인 CRISPR의 유전자 서열 절단 메커니즘을 생화학적으로 이해하고 유전자 편집의 윤리적 가이드라인을 연구합니다.",
+                        steps: [
+                            "CRISPR-Cas9의 표적 서열 탐색 및 DNA 절단 메커니즘 모델링 일러스트 작성",
+                            "유전병 치료 vs 맞춤형 아기 탄생에 대한 국내외 윤리 지침 분석",
+                            "과학기술 연구 윤리와 생화학적 응용 방향에 대한 학술 에세이 발표"
+                        ]
+                    }
+                ]
+            },
+            engineering: {
+                supplement: [
+                    {
+                        id: "eng_sup_1",
+                        title: "기초 알고리즘 오답 노트 & 블록 코딩",
+                        subject: "정보/수학 연계",
+                        desc: "프로그래밍의 기본인 조건문 and 반복문 개념을 학습하고, 엔트리나 스크래치로 간단한 게임을 만듭니다.",
+                        steps: [
+                            "알고리즘 순서도 그리기 규칙 학습 및 조건문 분기 설계",
+                            "블록 코딩 플랫폼을 이용해 덧셈/뺄셈 연산 게임 제작 및 테스트",
+                            "과정에서 겪은 버그 목록과 해결법을 담은 디버깅 일지 작성"
+                        ]
+                    },
+                    {
+                        id: "eng_sup_2",
+                        title: "우리 주위의 생활 밀착형 공학 기술 보고서",
+                        subject: "기술가정/물리 연계",
+                        desc: "센서(RFID, 초음파 센서) 등 아파트 현관문이나 자동차 후방 경보기에 쓰이는 공학 기술의 작동 방식을 탐구합니다.",
+                        steps: [
+                            "집 안이나 학교에 있는 3가지 자동 센서 기기 리스트 작성",
+                            "물리 법칙에 따른 신호 감지 메커니즘 정리",
+                            "센서 기술이 인간 삶에 기여한 편리성을 정리하여 수행평가 제출"
+                        ]
+                    }
+                ],
+                growth: [
+                    {
+                        id: "eng_gro_1",
+                        title: "아두이노 스마트 홈 IoT 프로토타이핑",
+                        subject: "정보/기술가정 연계",
+                        desc: "아두이노 보드와 센서(온습도, 조도 등)를 연결하여 자동 온습도 조절 장치 또는 방범 스마트 홈 시스템을 제작합니다.",
+                        steps: [
+                            "회로도 설계 및 아두이노 C언어 코드 작성",
+                            "조도 센서 작동 시 LED 점등 및 모터 제어 하드웨어 테스트",
+                            "제작 과정의 회로도, 소스코드, 구동 사진이 포함된 기술 문서 작성"
+                        ]
+                    },
+                    {
+                        id: "eng_gro_2",
+                        title: "웹 기술(HTML/CSS/JS)을 활용한 포트폴리오 사이트",
+                        subject: "정보 연계",
+                        desc: "웹 프로그래밍 언어를 학습하여 자신만의 진로 계획과 관심 비교과 활동을 보여주는 반응형 웹페이지를 개발합니다.",
+                        steps: [
+                            "웹 페이지 레이아웃 와이어프레임 스케치 및 메뉴 구성 설정",
+                            "HTML/CSS로 반응형 그리드를 입히고, JS로 인터랙티브 모달 구현",
+                            "GitHub Pages 등을 통한 웹사이트 배포 및 완성 링크 발표"
+                        ]
+                    }
+                ],
+                advanced: [
+                    {
+                        id: "eng_adv_1",
+                        title: "머신러닝 기반 이상 행동 감지 모델 설계",
+                        subject: "정보/수학(확률과통계) 연계",
+                        desc: "Teachable Machine 또는 파이썬의 TensorFlow를 활용하여 쓰러짐, 침입 등 이상 행동을 인지하는 알고리즘을 구축합니다.",
+                        steps: [
+                            "정상 상태와 이상 행동의 이미지 데이터셋 구축 및 전처리",
+                            "신경망(CNN) 기반 학습 모델 훈련 및 정확도 분석",
+                            "보안 카메라 시스템의 정확도 평가 보고서 및 사회적 기여 에세이 작성"
+                        ]
+                    },
+                    {
+                        id: "eng_adv_2",
+                        title: "자율주행 차량 최단 경로 탐색 알고리즘 변형",
+                        subject: "정보/기하 연계",
+                        desc: "최단 경로 탐색 알고리즘인 A* 알고리즘의 원리를 수학적 휴리스틱 함수 관점에서 비교 분석합니다.",
+                        steps: [
+                            "그래프 탐색 이론(BFS, 다익스트라)과 A* 알고리즘의 작동 비교",
+                            "파이썬 시뮬레이션을 사용하여 장애물 맵에서의 경로 탐색 시각화 구현",
+                            "자율주행 안전 확보를 위한 가중치 기반 A* 변형 논문 및 발표"
+                        ]
+                    }
+                ]
+            },
+            arts: {
+                supplement: [
+                    {
+                        id: "art_sup_1",
+                        title: "예술 작품 감상 일지 & 드로잉 챌린지",
+                        subject: "미술/음악 연계",
+                        desc: "매주 유명 명화나 클래식 명곡을 감상한 후, 작품의 창작 배경을 정리하고 간단한 감상 그림/일지를 남깁니다.",
+                        steps: [
+                            "주간 예술 테마(예: 인상주의 미술, 모차르트 음악) 선정",
+                            "작가/작곡가의 시대적 상황 및 감상 소감을 150자 내외로 작성",
+                            "감상 내용을 자유 스케치나 감상 로그 카드로 만들어 학급 게시판 공유"
+                        ]
+                    },
+                    {
+                        id: "art_sup_2",
+                        title: "우리 학교 체육 활동 분석 및 피트니스 일지",
+                        subject: "체육 연계",
+                        desc: "학교 체육 시간에 배운 운동의 기초 동작을 영상으로 자체 분석하고 성장을 기록하는 일지를 씁니다.",
+                        steps: [
+                            "올바른 운동 자세(예: 스쿼트, 배드민턴 스윙) 가이드라인 조사",
+                            "나의 운동 자세 촬영 및 올바른 자세와의 정렬 차이 자가 피드백 기록",
+                            "3주간의 자세 교정 비포&애프터 비교 보고서 작성"
+                        ]
+                    }
+                ],
+                growth: [
+                    {
+                        id: "art_gro_1",
+                        title: "환경 보호 캐릭터 & 굿즈 디자인",
+                        subject: "미술/사회 연계",
+                        desc: "태블릿 기기 및 그래픽 툴을 이용해 멸종위기 동물을 주제로 한 캐릭터/굿즈를 디자인하고 캠페인 포스터를 제작합니다.",
+                        steps: [
+                            "멸종 위기 동물 선정 및 캐릭터 기획 콘셉트 스케치 작성",
+                            "그래픽 소프트웨어를 활용한 디지털 컬러링 및 굿즈 목업 제작",
+                            "캠페인 기획의도 및 디자인 결과 보고서를 작성해 수행평가 제출"
+                        ]
+                    },
+                    {
+                        id: "art_gro_2",
+                        title: "지역 사회 활성화를 위한 스포츠 축제 기획",
+                        subject: "체육/사회 연계",
+                        desc: "청소년들이 즐길 수 있는 온/오프라인 융합 스포츠 대회를 설계하여 규칙, 일정, 홍보 방안 등을 기획서 형태로 작성합니다.",
+                        steps: [
+                            "안전하고 공평한 참여를 보장하는 스포츠 종목 규칙 개정",
+                            "홍보 포스터 디자인, 대회 타임 테이블, 부상 방지 대책 수립 기획안 작성",
+                            "체육 교사 자문서 첨부 및 학교 동아리 축제 안건 상정"
+                        ]
+                    }
+                ],
+                advanced: [
+                    {
+                        id: "art_adv_1",
+                        title: "AI 생성 예술의 저작권과 창작 주체성 연구",
+                        subject: "미술/정치와법 연계",
+                        desc: "생성형 AI(Midjourney 등)가 만든 이미지의 미학적 평가와 법적 저작권 쟁점을 융합적으로 고찰합니다.",
+                        steps: [
+                            "AI 예술 생성 툴의 학습 데이터 무단 사용 관련 해외 소송 판례 조사",
+                            "인간 작가의 고유한 창의성 영역과 AI 도구의 경계에 관한 미학적 에세이 집필",
+                            "미래 예술 교육 방향에 대한 제안서 작성 후 교내 발표회 참여"
+                        ]
+                    },
+                    {
+                        id: "art_adv_2",
+                        title: "운동 역학적 분석을 통한 스포츠 성과 개선 연구",
+                        subject: "체육/물리 연계",
+                        desc: "축구 킥의 각도, 야구 투구의 투사 궤적 등 물리 법칙을 적용해 효율적인 움직임을 논문 형식으로 규명합니다.",
+                        steps: [
+                            "동작 분석 소프트웨어를 활용하여 특정 스포츠 동작의 골격 각도 프레임 분석",
+                            "각도 및 힘 전달 효율을 물리 공식(토크, 운동량)으로 수치화",
+                            "부상 위험을 줄이고 최대 성능을 이끌어내는 동작 교정 모델 발표"
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // State variables
+        let appState = {
+            grades: {
+                korean: null,
+                math: null,
+                english: null,
+                inquiry: null
+            },
+            career: null,
+            tracker: [] // Array of { id, title, tier, steps: [bool, bool, bool] }
+        };
+
+        // Current active program clicked for modal use
+        let selectedProgramForModal = null;
+
+        // Initialize App on DOM Load
+        window.addEventListener("DOMContentLoaded", () => {
+            loadFromLocalStorage();
+            renderGradesUI();
+            renderCareerUI();
+            renderTrackerUI();
+            if (appState.career && isGradesComplete()) {
+                generateAnalysis();
+            }
+        });
+
+        // Save State helper
+        function saveToLocalStorage() {
+            localStorage.setItem("compass_grades", JSON.stringify(appState.grades));
+            localStorage.setItem("compass_career", appState.career);
+            localStorage.setItem("compass_tracker", JSON.stringify(appState.tracker));
+        }
+
+        // Load State helper
+        function loadFromLocalStorage() {
+            const grades = localStorage.getItem("compass_grades");
+            const career = localStorage.getItem("compass_career");
+            const tracker = localStorage.getItem("compass_tracker");
+
+            if (grades) appState.grades = JSON.parse(grades);
+            if (career && career !== "null") appState.career = career;
+            if (tracker) appState.tracker = JSON.parse(tracker);
+        }
+
+        // Reset all data in state and localStorage
+        function resetAllData() {
+            if (confirm("정말로 모든 입력 성적과 내 활동함 데이터를 초기화하시겠습니까?")) {
+                appState.grades = { korean: null, math: null, english: null, inquiry: null };
+                appState.career = null;
+                appState.tracker = [];
+                saveToLocalStorage();
+
+                // Reset inputs and UI
+                renderGradesUI();
+                renderCareerUI();
+                renderTrackerUI();
+
+                // Reset radio inputs
+                const checkedRadio = document.querySelector('input[name="career-domain"]:checked');
+                if (checkedRadio) checkedRadio.checked = false;
+
+                // Return to placeholder empty state
+                document.getElementById("empty-state").style.display = "flex";
+                document.getElementById("dashboard-content").style.display = "none";
+            }
+        }
+
+        // Check if all subject grades are chosen
+        function isGradesComplete() {
+            return appState.grades.korean && appState.grades.math && appState.grades.english && appState.grades.inquiry;
+        }
+
+        // Handle grade selection click
+        function selectGrade(subject, grade) {
+            appState.grades[subject] = grade;
+            saveToLocalStorage();
+            renderGradesUI();
+            
+            // Auto update radar chart real-time if analysis is already visible
+            if (document.getElementById("dashboard-content").style.display !== "none") {
+                updateRadarChart();
+                updateEncouragementCard();
+            }
+        }
+
+        // Update Grade Button styling based on state
+        function renderGradesUI() {
+            const subjects = ["korean", "math", "english", "inquiry"];
+            subjects.forEach(sub => {
+                const valSpan = document.getElementById(`${sub}-val`);
+                const val = appState.grades[sub];
+                if (val) {
+                    valSpan.textContent = `${val}등급`;
+                } else {
+                    valSpan.textContent = "선택 안 됨";
+                }
+
+                // Update button active classes
+                const row = document.querySelector(`.subject-row[data-subject="${sub}"]`);
+                const buttons = row.querySelectorAll(".grade-btn");
+                buttons.forEach(btn => {
+                    const gradeVal = parseInt(btn.getAttribute("data-grade"));
+                    if (gradeVal === val) {
+                        btn.classList.add("active");
+                    } else {
+                        btn.classList.remove("active");
+                    }
+                });
+            });
+        }
+
+        // Handle Career Selection
+        function selectCareer(careerDomain) {
+            appState.career = careerDomain;
+            saveToLocalStorage();
+            renderCareerUI();
+        }
+
+        // Update Career card selections in DOM
+        function renderCareerUI() {
+            const options = document.querySelectorAll(".career-option");
+            options.forEach(opt => {
+                const input = opt.querySelector('input[type="radio"]');
+                const val = input.value;
+                if (val === appState.career) {
+                    opt.classList.add("active");
+                    input.checked = true;
+                } else {
+                    opt.classList.remove("active");
+                    input.checked = false;
+                }
+            });
+        }
+
+        // Calculate Average Grade
+        function getAverageGrade() {
+            if (!isGradesComplete()) return null;
+            const sum = appState.grades.korean + appState.grades.math + appState.grades.english + appState.grades.inquiry;
+            return (sum / 4).toFixed(1);
+        }
+
+        // Logic triggered when clicking '맞춤 비교과 추천받기'
+        function generateAnalysis() {
+            if (!isGradesComplete()) {
+                alert("국어, 수학, 영어, 탐구 성적을 모두 입력해 주세요!");
+                return;
+            }
+            if (!appState.career) {
+                alert("희망하는 진로 계열을 선택해 주세요!");
+                return;
+            }
+
+            // Hide placeholder and show content
+            document.getElementById("empty-state").style.display = "none";
+            document.getElementById("dashboard-content").style.display = "block";
+
+            // 1. Render radar chart & Grade summary card
+            updateRadarChart();
+            updateEncouragementCard();
+
+            // 2. Render recommended lists
+            renderRecommendations();
+        }
+
+        // Update Radar SVG
+        function updateRadarChart() {
+            const svg = document.getElementById("radar-chart");
+            svg.innerHTML = ""; // Clear existing content
+
+            const cx = 100;
+            const cy = 100;
+            const maxR = 70;
+
+            // Subjects array and coordinates mapping
+            // Up: Korean, Right: English, Down: Inquiry, Left: Math
+            const subjectKeys = ["korean", "english", "inquiry", "math"];
+            const angles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI];
+
+            // 1. Draw Concentric diamonds guidelines (Grades 9, 7, 5, 3, 1)
+            const guideGrades = [9, 7, 5, 3, 1];
+            guideGrades.forEach(g => {
+                // Invert scale: 1 is outermost (maxR), 9 is innermost
+                const r = maxR * ((10 - g) / 9);
+                let pointsStr = "";
+                for (let i = 0; i < 4; i++) {
+                    const x = cx + r * Math.cos(angles[i]);
+                    const y = cy + r * Math.sin(angles[i]);
+                    pointsStr += `${x},${y} `;
+                }
+                const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                polygon.setAttribute("points", pointsStr.trim());
+                polygon.setAttribute("fill", "none");
+                polygon.setAttribute("stroke", "#E2E8F0");
+                polygon.setAttribute("stroke-width", "1");
+                if (g > 1) {
+                    polygon.setAttribute("stroke-dasharray", "2,2");
+                }
+                svg.appendChild(polygon);
+
+                // Add small guide numbers on the math axis (left)
+                if (g % 2 !== 0) {
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", cx - r + 3);
+                    text.setAttribute("y", cy - 4);
+                    text.setAttribute("fill", "#94A3B8");
+                    text.setAttribute("font-size", "7.5");
+                    text.setAttribute("font-weight", "600");
+                    text.textContent = g;
+                    svg.appendChild(text);
+                }
+            });
+
+            // 2. Draw axis lines
+            for (let i = 0; i < 4; i++) {
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", cx);
+                line.setAttribute("y1", cy);
+                line.setAttribute("x2", cx + maxR * Math.cos(angles[i]));
+                line.setAttribute("y2", cy + maxR * Math.sin(angles[i]));
+                line.setAttribute("stroke", "#E2E8F0");
+                line.setAttribute("stroke-width", "1");
+                svg.appendChild(line);
+            }
+
+            // 3. Draw Labels
+            const labelTexts = ["국어", "영어", "탐구", "수학"];
+            const labelOffsets = [
+                { x: cx, y: cy - maxR - 10, anchor: "middle" }, // Up
+                { x: cx + maxR + 8, y: cy + 4, anchor: "start" }, // Right
+                { x: cx, y: cy + maxR + 18, anchor: "middle" }, // Down
+                { x: cx - maxR - 8, y: cy + 4, anchor: "end" }   // Left
+            ];
+
+            for (let i = 0; i < 4; i++) {
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", labelOffsets[i].x);
+                text.setAttribute("y", labelOffsets[i].y);
+                text.setAttribute("text-anchor", labelOffsets[i].anchor);
+                text.classList.add("radar-label");
+                text.textContent = labelTexts[i];
+                svg.appendChild(text);
+            }
+
+            // 4. Calculate actual grade shape
+            let userPoints = [];
+            let completeGrades = true;
+
+            subjectKeys.forEach((key, idx) => {
+                const grade = appState.grades[key];
+                if (grade) {
+                    const r = maxR * ((10 - grade) / 9);
+                    const x = cx + r * Math.cos(angles[idx]);
+                    const y = cy + r * Math.sin(angles[idx]);
+                    userPoints.push({ x, y });
+                } else {
+                    completeGrades = false;
+                }
+            });
+
+            if (completeGrades) {
+                // Draw polygon
+                const polyPointsStr = userPoints.map(p => `${p.x},${p.y}`).join(" ");
+                const poly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                poly.setAttribute("points", polyPointsStr);
+                poly.setAttribute("fill", "rgba(37, 99, 235, 0.2)");
+                poly.setAttribute("stroke", "var(--primary)");
+                poly.setAttribute("stroke-width", "2.5");
+                poly.setAttribute("stroke-linejoin", "round");
+                svg.appendChild(poly);
+
+                // Draw circles on vertices
+                userPoints.forEach(p => {
+                    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", p.x);
+                    circle.setAttribute("cy", p.y);
+                    circle.setAttribute("r", "4");
+                    circle.setAttribute("fill", "white");
+                    circle.setAttribute("stroke", "var(--primary)");
+                    circle.setAttribute("stroke-width", "2");
+                    svg.appendChild(circle);
+                });
+            }
+        }
+
+        // Render card texts dynamically based on computed grades
+        function updateEncouragementCard() {
+            const avg = getAverageGrade();
+            if (!avg) return;
+
+            document.getElementById("avg-badge-val").textContent = `평균 ${avg} 등급`;
+
+            const headerMsg = document.getElementById("analysis-header-msg");
+            const textMsg = document.getElementById("encouragement-msg-text");
+
+            if (avg <= 1.9) {
+                headerMsg.textContent = "학업 역량이 대단히 훌륭합니다! 🏆";
+                textMsg.textContent = "최고 수준의 성적을 유지하고 있네요! 이제는 단순 문제 풀이 학습에 그치지 말고, 심화 학술지 분석 및 다교과 연계 융합 프로젝트 리더 활동을 통해 자신만의 깊이 있는 학업 깊이를 생활기록부에 증명할 최적의 시기입니다. 다음 레벨로 도약해 볼까요?";
+            } else if (avg <= 3.9) {
+                headerMsg.textContent = "탄탄한 실력과 무한한 도약 가능성! 🚀";
+                textMsg.textContent = "안정적인 실력을 다지고 있으며, 조금만 날개를 펼치면 상위 등급으로 충분히 도약할 수 있는 성적대입니다. 교과서 핵심 탐구 질문을 심화시킨 탐구 보고서 작성이나, 교내 주제 탐구 소모임을 직접 기획하여 주도적인 학업 열정을 어필해 보세요. 성장이 눈앞에 있습니다!";
+            } else {
+                headerMsg.textContent = "성장을 위한 놀라운 잠재력이 꿈틀대고 있어요! 🌱";
+                textMsg.textContent = "지금의 모습이 전부가 아닙니다! 앞으로 채워나갈 성장 잠재력이 무궁무진하다는 사실을 기억하세요. 어려운 심화 활동보다는 수업 내용에 철저히 충실했던 과정(오답 노트를 바탕으로 한 학력 보충 챌린지, 또래 배움 멘티 활동 등)을 솔직하고 정성스럽게 누적해 가는 것만으로도 입학사정관에게 엄청난 감동을 줄 수 있습니다. 한 걸음씩 차근차근 나아가 봐요!";
+            }
+        }
+
+        // Render recommended lists, applying active recommendation focus styles
+        function renderRecommendations() {
+            const avg = getAverageGrade();
+            if (!avg || !appState.career) return;
+
+            const avgNum = parseFloat(avg);
+            let activeTier = "";
+            if (avgNum <= 1.9) {
+                activeTier = "advanced";
+            } else if (avgNum <= 3.9) {
+                activeTier = "growth";
+            } else {
+                activeTier = "supplement";
+            }
+
+            // 1. Highlight/dim tier blocks
+            const tiers = ["supplement", "growth", "advanced"];
+            tiers.forEach(t => {
+                const el = document.getElementById(`tier-${t}`);
+                if (t === activeTier) {
+                    el.className = "tier-card active-recommendation";
+                } else {
+                    el.className = "tier-card inactive-recommendation";
+                }
+            });
+
+            // 2. Clear and fill lists
+            const careerDb = PROGRAM_DATABASE[appState.career];
+            if (!careerDb) return;
+
+            renderListForTier("supplement", careerDb.supplement, "보완/보충 단계");
+            renderListForTier("growth", careerDb.growth, "도약/발전 단계");
+            renderListForTier("advanced", careerDb.advanced, "심화/유지 단계");
+        }
+
+        // Inner function to build list items
+        function renderListForTier(tierKey, items, tierLabelText) {
+            const box = document.getElementById(`programs-${tierKey}-box`);
+            box.innerHTML = "";
+
+            items.forEach(item => {
+                const isAdded = appState.tracker.some(t => t.id === item.id);
+                const addBtnClass = isAdded ? "btn-action-add added" : "btn-action-add";
+                const addBtnIcon = isAdded ? "✓" : "+";
+                const addBtnTitle = isAdded ? "담김" : "내 활동함에 추가";
+
+                const div = document.createElement("div");
+                div.className = "program-item";
+                div.innerHTML = `
+                    <div class="program-header">
+                        <span class="program-tag">${item.subject}</span>
+                        <h5 class="program-item-title">${item.title}</h5>
+                        <p class="program-item-desc">${item.desc}</p>
+                    </div>
+                    <div class="program-actions">
+                        <button type="button" class="btn-action-view" onclick="openDetailModal('${tierKey}', '${item.id}', '${tierLabelText}')">상세 및 로드맵</button>
+                        <button type="button" class="${addBtnClass}" title="${addBtnTitle}" onclick="toggleTrackerItem('${tierKey}', '${item.id}', event)">${addBtnIcon}</button>
+                    </div>
+                `;
+                box.appendChild(div);
+            });
+        }
+
+        // Modal Action
+        function openDetailModal(tierKey, itemId, tierLabelText) {
+            const careerDb = PROGRAM_DATABASE[appState.career];
+            if (!careerDb) return;
+
+            const item = careerDb[tierKey].find(i => i.id === itemId);
+            if (!item) return;
+
+            selectedProgramForModal = { ...item, tierKey, tierLabelText };
+
+            // Fill modal UI elements
+            document.getElementById("modal-tier-badge").textContent = tierLabelText;
+            
+            // Style modal tier badge color
+            const badgeEl = document.getElementById("modal-tier-badge");
+            badgeEl.className = "tier-badge-label";
+            if (tierKey === "supplement") badgeEl.classList.add("badge-supplement");
+            else if (tierKey === "growth") badgeEl.classList.add("badge-growth");
+            else if (tierKey === "advanced") badgeEl.classList.add("badge-advanced");
+
+            document.getElementById("modal-subject-tag").textContent = item.subject;
+            document.getElementById("modal-title-text").textContent = item.title;
+            document.getElementById("modal-desc-text").textContent = item.desc;
+            
+            // Set 3 Steps description
+            document.getElementById("modal-step-1-desc").textContent = item.steps[0];
+            document.getElementById("modal-step-2-desc").textContent = item.steps[1];
+            document.getElementById("modal-step-3-desc").textContent = item.steps[2];
+
+            // Set button text/styling inside modal
+            const actionBtn = document.getElementById("modal-action-btn");
+            const isAdded = appState.tracker.some(t => t.id === itemId);
+            if (isAdded) {
+                actionBtn.textContent = "내 활동함에서 해제";
+                actionBtn.className = "btn-modal-add added";
+            } else {
+                actionBtn.textContent = "내 활동함에 담기";
+                actionBtn.className = "btn-modal-add";
+            }
+
+            // Open Overlay
+            document.getElementById("detail-modal").classList.add("active");
+        }
+
+        function closeModal(event) {
+            // Close only if backdrop itself is clicked
+            if (event.target === document.getElementById("detail-modal")) {
+                closeModalDirect();
+            }
+        }
+
+        function closeModalDirect() {
+            document.getElementById("detail-modal").classList.remove("active");
+            selectedProgramForModal = null;
+        }
+
+        // Toggle from Modal Action Button
+        function toggleAddFromModal() {
+            if (!selectedProgramForModal) return;
+            const { tierKey, id } = selectedProgramForModal;
+            
+            // Trigger core toggle action
+            toggleTrackerItem(tierKey, id);
+
+            // Re-sync modal button visual state
+            const isAdded = appState.tracker.some(t => t.id === id);
+            const actionBtn = document.getElementById("modal-action-btn");
+            if (isAdded) {
+                actionBtn.textContent = "내 활동함에서 해제";
+                actionBtn.className = "btn-modal-add added";
+            } else {
+                actionBtn.textContent = "내 활동함에 담기";
+                actionBtn.className = "btn-modal-add";
+            }
+        }
+
+        // Main action: Add or remove from Goal Tracker
+        function toggleTrackerItem(tierKey, itemId, event) {
+            if (event) {
+                event.stopPropagation(); // Avoid triggering card events
+            }
+
+            const careerDb = PROGRAM_DATABASE[appState.career];
+            if (!careerDb) return;
+
+            const item = careerDb[tierKey].find(i => i.id === itemId);
+            if (!item) return;
+
+            const existingIdx = appState.tracker.findIndex(t => t.id === itemId);
+
+            if (existingIdx > -1) {
+                // Remove
+                appState.tracker.splice(existingIdx, 1);
+            } else {
+                // Add new
+                const tierNameKorean = tierKey === "supplement" ? "보완/보충 단계" : (tierKey === "growth" ? "도약/발전 단계" : "심화/유지 단계");
+                appState.tracker.push({
+                    id: item.id,
+                    title: item.title,
+                    tier: tierNameKorean,
+                    steps: [false, false, false]
+                });
+            }
+
+            saveToLocalStorage();
+            renderRecommendations(); // Re-render lists to update buttons
+            renderTrackerUI();       // Re-render tracker
+        }
+
+        // Render My Goal Tracker (내 활동함)
+        function renderTrackerUI() {
+            const list = document.getElementById("tracker-list-box");
+            
+            // Calculate total activities count & completion percent
+            const total = appState.tracker.length;
+            document.getElementById("tracker-count-text").textContent = `담은 활동 ${total}개`;
+
+            if (total === 0) {
+                list.innerHTML = `<div class="tracker-empty">아직 담은 비교과 활동이 없습니다. 추천 결과에서 마음에 드는 활동을 담아보세요!</div>`;
+                document.getElementById("tracker-pct-text").textContent = "달성률 0%";
+                document.getElementById("tracker-main-progress").style.width = "0%";
+                return;
+            }
+
+            list.innerHTML = "";
+
+            let totalCheckedCount = 0;
+            const totalMaxChecks = total * 3;
+
+            appState.tracker.forEach(item => {
+                // Find matching steps description in database
+                // Since user might switch career fields, we look globally or keep it static
+                // Better: find in the database based on prefix ID
+                let dbItem = null;
+                const domains = ["humanities", "social", "natural", "engineering", "arts"];
+                const tiers = ["supplement", "growth", "advanced"];
+                
+                for (let d of domains) {
+                    for (let t of tiers) {
+                        if (PROGRAM_DATABASE[d] && PROGRAM_DATABASE[d][t]) {
+                            const found = PROGRAM_DATABASE[d][t].find(i => i.id === item.id);
+                            if (found) {
+                                dbItem = found;
+                                break;
+                            }
+                        }
+                    }
+                    if (dbItem) break;
+                }
+
+                // Default fallback if database structure changed or not matching
+                const stepsDesc = dbItem ? dbItem.steps : [
+                    "1단계: 계획 수립 및 자료 조사",
+                    "2단계: 탐구 내용 수행 및 기록",
+                    "3단계: 결과물 제작 및 세특 연계 제출"
+                ];
+
+                // Calculate item completion rate
+                const checkedCount = item.steps.filter(Boolean).length;
+                totalCheckedCount += checkedCount;
+                const itemPct = Math.round((checkedCount / 3) * 100);
+
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "tracker-item";
+                itemDiv.innerHTML = `
+                    <div class="tracker-item-header">
+                        <div class="tracker-item-title-box">
+                            <span class="tracker-item-tier">${item.tier}</span>
+                            <h5 class="tracker-item-title">${item.title}</h5>
+                        </div>
+                        <button type="button" class="btn-tracker-delete" title="삭제" onclick="removeTrackerDirect('${item.id}')">🗑️</button>
+                    </div>
+                    <div class="tracker-item-progress-wrap">
+                        <div class="tracker-item-bar-bg">
+                            <div class="tracker-item-bar" style="width: ${itemPct}%"></div>
+                        </div>
+                        <span class="tracker-item-pct">${itemPct}%</span>
+                    </div>
+                    <div class="action-checklist">
+                        <label class="check-label">
+                            <input type="checkbox" ${item.steps[0] ? "checked" : ""} onchange="toggleStepCheck('${item.id}', 0, this.checked)">
+                            <span>1단계: ${stepsDesc[0]}</span>
+                        </label>
+                        <label class="check-label">
+                            <input type="checkbox" ${item.steps[1] ? "checked" : ""} onchange="toggleStepCheck('${item.id}', 1, this.checked)">
+                            <span>2단계: ${stepsDesc[1]}</span>
+                        </label>
+                        <label class="check-label">
+                            <input type="checkbox" ${item.steps[2] ? "checked" : ""} onchange="toggleStepCheck('${item.id}', 2, this.checked)">
+                            <span>3단계: ${stepsDesc[2]}</span>
+                        </label>
+                    </div>
+                `;
+                list.appendChild(itemDiv);
+            });
+
+            // Update main overall progress bar
+            const overallPct = Math.round((totalCheckedCount / totalMaxChecks) * 100);
+            document.getElementById("tracker-pct-text").textContent = `달성률 ${overallPct}%`;
+            document.getElementById("tracker-main-progress").style.width = `${overallPct}%`;
+        }
+
+        // Direct delete action from tracker
+        function removeTrackerDirect(itemId) {
+            const idx = appState.tracker.findIndex(t => t.id === itemId);
+            if (idx > -1) {
+                appState.tracker.splice(idx, 1);
+                saveToLocalStorage();
+                renderRecommendations();
+                renderTrackerUI();
+            }
+        }
+
+        // Checkbox interaction inside tracker items
+        function toggleStepCheck(itemId, stepIdx, isChecked) {
+            const item = appState.tracker.find(t => t.id === itemId);
+            if (item) {
+                item.steps[stepIdx] = isChecked;
+                saveToLocalStorage();
+                renderTrackerUI();
+            }
+        }
+    </script>
+</body>
+</html>
